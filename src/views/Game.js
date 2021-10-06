@@ -5,6 +5,7 @@ import helpers from "../helpers"
 
 const Game = () => {
     const [questions, setQuestions] = useState([])
+    var counter = 0
 
     async function fetchQuestions() {
         const requestOptions = {
@@ -34,6 +35,7 @@ const Game = () => {
     return (
         <div>
         <h1>Mi juego de preguntas y respuestas</h1>
+        <button onClick={()=>console.log(counter++)}> Siguiente Pregunta</button>
         {
             questions.map((question,key)=>{
                 const {answerA, answerB, answerC } = question.wrongAnswers[0]
