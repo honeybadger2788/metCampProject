@@ -1,59 +1,71 @@
 import { useState, useEffect } from 'react';
-import Answers from "./Answers"
+import Answers from "../components/Answers"
 import helpers from "../helpers"
 
 
 const Game = () => {
     const [questions, setQuestions] = useState([])
-    var counter = 0
+    const [counter, setCounter] = useState(0)
 
-    async function fetchQuestions() {
-        const requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-        };
+    const [totalScore, setTotalScore] = useState(0)
 
-        const preguntas = await fetch('https://6141ec414d16670017ba2a7b.mockapi.io/api/v1/questions',
-        requestOptions)
+    function newScore (currentScore) {
+        console.log(currentScore)
+        setTotalScore(totalScore + currentScore)
+    } 
+
+    function restart(){
+        setCounter(0)
+        setTotalScore(0)
+    }    
+
+    function addCounter(){
+        setCounter(counter + 1)
+        console.log(counter)
+    }
+
+    const requestOptions = {
+        method: 'GET',
+        redirect: 'follow'
+    };
+
+    useEffect(() => {
+        fetch('https://6141ec414d16670017ba2a7b.mockapi.io/api/v1/questions',requestOptions)
         .then((response) => response.json())
         .then((result) => {
-            return result
+            helpers.shufler(result)
+            setQuestions(result)
         })
         .catch((error) => {
             return error
         })
-        console.log('Preguntas:', preguntas)
-        helpers.shufler(preguntas)
-        setQuestions(preguntas)
-    }
-
-    useEffect(() => {
-        //Acá va el fetch
-        fetchQuestions()
     }, [])
 
     return (
         <div>
         <h1>Mi juego de preguntas y respuestas</h1>
-        <button onClick={()=>console.log(counter++)}> Siguiente Pregunta</button>
+        { counter<questions.length?
+        <button onClick={addCounter}> Saltear Pregunta</button>:
+        (
+            <>
+        <h4>Haz llegado al final del juego</h4>
+        <button onClick={restart}>Reiniciar juego</button>
+            </>
+        )
+        }
         {
-            questions.map((question,key)=>{
-                const {answerA, answerB, answerC } = question.wrongAnswers[0]
-                const answers = [
-                    { answer: question.rightAnswer, correct: true},
-                    { answer: answerA, correct: false},
-                    { answer: answerB, correct: false},
-                    { answer: answerC, correct: false}
-                ]
-                helpers.shufler(answers)
-                return (
-                    <>
-                <h4 key={key}>{question.question}</h4>
-                <Answers answers={answers}></Answers>
-                    </>
-                )
+            questions.map((question,key) => {
+                if(key===counter){
+                    return (
+                        <>
+                        <h4 key={key}>{question.question}</h4>
+                        <Answers question={question} scoreUpdate={newScore} nextQuestion={addCounter}></Answers>
+                        </>
+                    )
+                } 
             })
         }
+        <h1>Puntaje total: {totalScore}</h1> 
         </div>
     )
 }
