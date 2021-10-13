@@ -1,5 +1,6 @@
+import "../bootstrap-grid.css"
 import React from 'react'
-import helpers from "../helpers"
+import helpers from "../helpers/helpers"
 import Swal from 'sweetalert2'
 
 function Answers(props) {
@@ -15,10 +16,10 @@ function Answers(props) {
 
     
     return (
-        <div style={{display:'flex',flexDirection:'column'}}>
+        <div className="container d-flex flex-column align-items-center col-md-6">
             {
                 answers.map((answer,key)=>{
-                    return <button className="buttonAnswer" key={key} 
+                    return <button className="buttonAnswer m-3" key={key} 
                     onClick={()=>{
                         if(answer.correct){
                             Swal.fire({

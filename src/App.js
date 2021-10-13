@@ -9,7 +9,7 @@ function App() {
     <div className="App">
       Quizgamet
     </div>
-    <div style={{display:'flex',flexDirection:'column'}}>
+    <div className="container d-flex flex-column">
       <Link to="/">Home</Link>
       <Link to="/game">Juego</Link>
     </div>
